@@ -36,9 +36,9 @@ current_player = "X"
 winner = None
 game_over = False
 
-# Play Again button
-button_rect = pygame.Rect(WIDTH // 2 - 100, HEIGHT // 2 + 100, 200, 60)
-
+# Buttons
+play_again_button = pygame.Rect(WIDTH // 2 - 100, HEIGHT // 2 + 100, 200, 60)
+quit_button = pygame.Rect(WIDTH // 2 - 100, HEIGHT // 2 + 180, 200, 60)
 
 def draw_grid_background():
     for row in range(GRID_SIZE):
@@ -50,7 +50,6 @@ def draw_grid_background():
     for i in range(1, GRID_SIZE):
         pygame.draw.line(screen, LINE_COLOR, (i * SQUARE_SIZE, 0), (i * SQUARE_SIZE, HEIGHT), LINE_WIDTH)
         pygame.draw.line(screen, LINE_COLOR, (0, i * SQUARE_SIZE), (WIDTH, i * SQUARE_SIZE), LINE_WIDTH)
-
 
 def draw_marks():
     for row in range(GRID_SIZE):
@@ -64,20 +63,16 @@ def draw_marks():
                 rect = text.get_rect(center=(x, y))
                 screen.blit(text, rect)
 
-
 def check_winner():
-    # Check rows
     for row in board:
         if row[0] != "" and row.count(row[0]) == GRID_SIZE:
             return row[0]
 
-    # Check columns
     for col in range(GRID_SIZE):
         col_vals = [board[row][col] for row in range(GRID_SIZE)]
         if col_vals[0] != "" and col_vals.count(col_vals[0]) == GRID_SIZE:
             return col_vals[0]
 
-    # Check diagonals
     if board[0][0] != "" and all(board[i][i] == board[0][0] for i in range(GRID_SIZE)):
         return board[0][0]
     if board[0][GRID_SIZE - 1] != "" and all(board[i][GRID_SIZE - 1 - i] == board[0][GRID_SIZE - 1] for i in range(GRID_SIZE)):
@@ -85,10 +80,8 @@ def check_winner():
 
     return None
 
-
 def is_board_full():
     return all(board[row][col] != "" for row in range(GRID_SIZE) for col in range(GRID_SIZE))
-
 
 def draw_button(rect, text, mouse_pos):
     color = BUTTON_HOVER if rect.collidepoint(mouse_pos) else BUTTON_COLOR
@@ -97,14 +90,12 @@ def draw_button(rect, text, mouse_pos):
     text_rect = text_surf.get_rect(center=rect.center)
     screen.blit(text_surf, text_rect)
 
-
 def reset_game():
     global board, current_player, winner, game_over
     board = [["" for _ in range(GRID_SIZE)] for _ in range(GRID_SIZE)]
     current_player = "X"
     winner = None
     game_over = False
-
 
 # Main loop
 running = True
@@ -129,8 +120,10 @@ while running:
                     game_over = True
 
         if game_over and event.type == pygame.MOUSEBUTTONDOWN:
-            if button_rect.collidepoint(event.pos):
+            if play_again_button.collidepoint(event.pos):
                 reset_game()
+            elif quit_button.collidepoint(event.pos):
+                running = False
 
     # Show result
     if winner:
@@ -140,9 +133,11 @@ while running:
         draw_text = FONT.render("Draw!", True, WIN_COLOR)
         screen.blit(draw_text, draw_text.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 50)))
 
-    # Draw Play Again button
+    # Draw buttons
     if game_over:
-        draw_button(button_rect, "Play Again", pygame.mouse.get_pos())
+        mouse_pos = pygame.mouse.get_pos()
+        draw_button(play_again_button, "Play Again", mouse_pos)
+        draw_button(quit_button, "Quit", mouse_pos)
 
     pygame.display.update()
 
