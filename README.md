@@ -15,7 +15,7 @@ Grid style is inspired by a light-yellow and grey alternating background for vis
 
 ✔️ Winner and draw detection logic
 
-✔️ "Play Again" button after game ends
+✔️ "Play Again" & "Quit" button after game ends
 
 ✔️ Smooth graphical interface using Pygame
 
